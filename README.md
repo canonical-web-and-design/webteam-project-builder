@@ -1,7 +1,8 @@
 # webteam-project-builder
 
-A script for internal Jenkins deployments at Canonical. Essentially it :
+A script for internal Jenkins deployments at Canonical. There are two scripts:
 
-Runs the `spec-repo` mojo spec with with `project-repo` python project, kicking off the `make-targets` maketarget.
-Then tarballs everything and uploads to swift, and appends the bucket location to `location-file`
-
+```
+./rebuild-pip-cache.sh {project-name}  # Create a cache of built pip dependencies
+./create-upload-archive.sh {project-name}  # Create a new archive of the code and upload it to swift
+```
