@@ -82,7 +82,7 @@ container_url=`swift stat -v ${project_name} | grep -o 'http.*'`
 container_url=$(echo ${container_url} | sed "s/http:\/\/kelpie.internal:8080/https:\/\/objectstorage.prodstack.canonical.com/")
 archive_url="${container_url}/${latest_revision}/${archive_filename}"
 
-@echo "==="
-@echo "Latest revision:  ${latest_revision}"
-@echo "URL for 'latest': ${container_url}/latest"
-@echo "URL for archive:  ${archive_url}"
+echo "==="
+echo "Latest revision:  ${latest_revision}"
+echo "URL for 'latest': ${container_url}/latest"
+echo "URL for archive:  ${archive_url}"
