@@ -78,6 +78,8 @@ swift upload ${project_name} latest
 
 # Get the URL
 container_url=`swift stat -v ${project_name} | grep -o 'http.*'`
+# Replace kelpie with external interface
+container_url=$(echo ${container_url} | sed "s/http:\/\/kelpie.internal:8080/https:\/\/objectstorage.prodstack.canonical.com/")
 archive_url="${container_url}/${latest_revision}/${archive_filename}"
 latest_file_url=${container_url}/latest
 
