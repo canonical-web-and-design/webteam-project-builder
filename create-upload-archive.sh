@@ -52,6 +52,7 @@ else
 fi
 
 # Create pip-cache
+rm -rf ${project_name}/pip-cache
 bzr branch ${pip_cache_repository} ${project_name}/pip-cache 
 
 # Run make targets
