@@ -51,9 +51,12 @@ else
     bzr branch ${project_repository} ${project_name}
 fi
 
-# Create pip-cache
-rm -rf ${project_name}/pip-cache
-bzr branch ${pip_cache_repository} ${project_name}/pip-cache 
+# Get pip-cache
+if [ -d ${project_name}/pip-cache} ]; then
+    bzr pull --directory ${project_name}/pip-cache --overwrite ${pip_cache_repository}
+else
+    bzr branch ${pip_cache_repository} ${project_name}/pip-cache 
+fi
 
 # Run make targets
 if [ -n "${make_targets}" ]; then
