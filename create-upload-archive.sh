@@ -52,7 +52,7 @@ else
 fi
 
 # Get pip-cache
-if [ -d ${project_name}/pip-cache} ]; then
+if [ -d ${project_name}/pip-cache ]; then
     bzr pull --directory ${project_name}/pip-cache --overwrite ${pip_cache_repository}
 else
     bzr branch ${pip_cache_repository} ${project_name}/pip-cache 
