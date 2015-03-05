@@ -2,6 +2,9 @@
 
 set -ex
 
+# Includes
+source lib/bzr-helpers.sh
+
 # Get project name
 if [ -z "${project_name}" ]; then
     if [ -n "${1}" ]; then
@@ -37,7 +40,7 @@ done
 if [ -z "${project_repository}" ];    then project_repository=lp:${project_name}; fi
 if [ -z "${pip_cache_repository}" ];  then pip_cache_repository=lp:~webteam-backend/${project_name}/pip-cache; fi
 
-# Constants
+# Properties
 archive_filename=${project_name}.tar.gz
 
 # Make sure builds directory exists
@@ -58,6 +61,16 @@ else
     bzr branch ${pip_cache_repository} ${project_name}/pip-cache 
 fi
 
+# Get revision ids
+dependencies_revision=$(cat ${project_name}/pip-cache/project-revision.txt)
+latest_revision=$(bzr-revision-id ${project_name})
+
+# Make sure revision info matches
+if [ "${dependencies_revision}" != "${latest_revision}" ]; then
+    echo "Depenencies version (${dependencies_revision}) doesn't match project version (${latest_revision}). Exiting."
+    exit 1
+fi
+
 # Run make targets
 if [ -n "${make_targets}" ]; then
     make -C ${project_name} ${make_targets}  # Run any necessary make targets
@@ -67,8 +80,6 @@ fi
 rm -f ${archive_filename}
 tar -C ${project_name} --exclude-vcs -czf ${archive_filename} .
 
-# Get revision
-latest_revision=$(bzr revno ${project_name})
 
 # Upload to swift container
 swift upload ${project_name} ${archive_filename} --object-name=${latest_revision}/${archive_filename}

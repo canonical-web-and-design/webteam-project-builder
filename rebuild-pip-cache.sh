@@ -2,6 +2,9 @@
 
 set -ex
 
+# Includes
+source lib/bzr-helpers.sh
+
 # Get project name
 if [ -z "${project_name}" ]; then
     if [ -n "${1}" ]; then
@@ -37,38 +40,50 @@ done
 if [ -z "${project_repo}" ];   then project_repo=lp:${project_name}; fi
 if [ -z "${pip_cache_repo}" ]; then pip_cache_repo=lp:~webteam-backend/${project_name}/pip-cache; fi
 
-# Create project directory in pip-caches
-mkdir -p pip-caches/${project_name}
-cd pip-caches/${project_name}
+cache_dir=working-cache
+project_cache_dir=working-cache/${project_name}
+dependencies_dir=${project_cache_dir}/pip-cache
+code_dir=${project_cache_dir}/code
+
+# Create cache directories
+mkdir -p ${project_cache_dir}
 
 # Get pip-cache
-if [ -d pip-cache ]; then
-    bzr pull --directory pip-cache --overwrite ${pip_cache_repo}
+if [ -d ${dependencies_dir} ]; then
+    bzr pull --directory ${dependencies_dir} --overwrite ${pip_cache_repo}
 else
     # Try-catch
     {
-        bzr branch ${pip_cache_repo} pip-cache  # Create pip-cache
+        bzr branch ${pip_cache_repo} ${dependencies_dir}  # Create pip-cache
     } || {
         if [ ! ${create} ]; then
             echo "repository ${pip_cache_repo} doesn't exist";
             exit
         else
             # Create blank pip-cache repo
-            mkdir pip-cache
-            bzr init pip-cache
+            mkdir ${dependencies_dir}
+            bzr init ${dependencies_dir}
         fi
     }
 fi
 
 # Get project
-if [ -d code ]; then
-    bzr pull --directory code --overwrite ${project_repo}
+if [ -d ${code_dir} ]; then
+    bzr pull --directory ${code_dir} --overwrite ${project_repo}
 else
-    bzr branch ${project_repo} code
+    bzr branch ${project_repo} ${code_dir}
 fi
 
-# Build pip-cache
-pip install --exists-action=w --download pip-cache/ -r code/requirements/standard.txt
-bzr add pip-cache/.
-bzr commit pip-cache/ --unchanged -m 'Requirements auto-updated by webteam-project-builder'
-bzr push --directory pip-cache ${pip_cache_repo}
+# Clear out existing dependencies, to create from scratch again
+rm -r ${dependencies_dir}/*
+
+# Rebuild dependencies
+pip install --exists-action=w --download ${dependencies_dir} -r ${code_dir}/requirements/standard.txt
+
+# Get latest revision number of the project, store it alongside dependencies
+echo $(bzr-revision-id ${code_dir}) > ${dependencies_dir}/project-revision.txt
+
+# Commit and push all new files
+bzr add ${dependencies_dir}/.
+bzr commit ${dependencies_dir} --unchanged -m 'Requirements auto-updated by webteam-project-builder'
+bzr push --directory ${dependencies_dir} ${pip_cache_repo}
