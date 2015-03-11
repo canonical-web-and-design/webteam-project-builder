@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+x#!/usr/bin/env bash
 
 set -ex
 
@@ -74,12 +74,12 @@ else
     bzr branch ${project_repo} ${code_dir}
 fi
 
-existing_revision=$(cat ${dependencies_dir}/project-revision.txt)
-latest_revision=$(bzr-revision-id ${code_dir})
+existing_requirements_revision=$(cat ${dependencies_dir}/requirements-revision.txt)
+latest_requirements_revision=$(bzr-revision-id requirements ${code_dir})
 
 # Make sure this is a new revision
-if [[ "${existing_revision}" == "${latest_revision}" ]]; then
-    echo "New version (${latest_revision}) is the same as the existing version (${existing_revision}). Aborting."
+if [[ "${existing_requirements_revision}" == "${latest_requirements_revision}" ]]; then
+    echo "New version (${latest_requirements_revision}) is the same as the existing version (${existing_requirements_revision}). Aborting."
     exit 1
 fi
 
@@ -90,7 +90,7 @@ rm -r ${dependencies_dir}/*
 pip install --exists-action=w --download ${dependencies_dir} -r ${code_dir}/requirements/standard.txt
 
 # Get latest revision number of the project, store it alongside dependencies
-echo ${latest_revision} > ${dependencies_dir}/project-revision.txt
+echo ${latest_requirements_revision} > ${dependencies_dir}/requirements-revision.txt
 
 # Commit and push all new files
 bzr add ${dependencies_dir}/.
