@@ -87,7 +87,7 @@ fi
 rm -r ${dependencies_dir}/*
 
 # Rebuild dependencies
-pip install --exists-action=w --download ${dependencies_dir} -r ${code_dir}/requirements/standard.txt
+pip install --upgrade --exists-action=w --download ${dependencies_dir} -r ${code_dir}/requirements/standard.txt
 
 # Get latest revision number of the project, store it alongside dependencies
 echo ${latest_requirements_revision} > ${dependencies_dir}/requirements-revision.txt
