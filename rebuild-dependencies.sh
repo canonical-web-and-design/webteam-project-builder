@@ -74,12 +74,12 @@ else
     bzr branch ${project_repo} ${code_dir}
 fi
 
-existing_requirements_revision=$(cat ${dependencies_dir}/requirements-revision.txt)
-latest_requirements_revision=$(bzr-revision-id requirements ${code_dir})
+existing_requirements_revno=$(cat ${dependencies_dir}/requirements-revno.txt)
+latest_requirements_revno=$(bzr-revno ${code_dir}/requirements)
 
 # Make sure this is a new revision
-if [[ "${existing_requirements_revision}" == "${latest_requirements_revision}" ]]; then
-    echo "New version (${latest_requirements_revision}) is the same as the existing version (${existing_requirements_revision}). Aborting."
+if [[ "${existing_requirements_revno}" == "${latest_requirements_revno}" ]]; then
+    echo "New version (${latest_requirements_revno}) is the same as the existing version (${existing_requirements_revno}). Aborting."
     exit 1
 fi
 
@@ -90,7 +90,7 @@ rm -r ${dependencies_dir}/*
 pip install --upgrade --exists-action=w --download ${dependencies_dir} -r ${code_dir}/requirements/standard.txt
 
 # Get latest revision number of the project, store it alongside dependencies
-echo ${latest_requirements_revision} > ${dependencies_dir}/requirements-revision.txt
+echo ${latest_requirements_revno} > ${dependencies_dir}/requirements-revision.txt
 
 # Commit and push all new files
 bzr add ${dependencies_dir}/.

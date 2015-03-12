@@ -62,12 +62,12 @@ else
 fi
 
 # Get revision ids
-dependencies_requirements_revision=$(cat ${project_name}/pip-cache/requirements-revision.txt)
-latest_requirements_revision=$(bzr-revision-id requirements ${project_name})
+dependencies_requirements_revno=$(cat ${project_name}/pip-cache/requirements-revno.txt)
+latest_requirements_revno=$(bzr-revno ${project_name}/requirements)
 
 # Make sure revision info matches
-if [ "${dependencies_requirements_revision}" != "${latest_requirements_revision}" ]; then
-    echo "Depenencies version (${dependencies_requirements_revision}) doesn't match project version (${latest_requirements_revision}). Exiting."
+if [ "${dependencies_requirements_revno}" != "${latest_requirements_revno}" ]; then
+    echo "Depenencies version (${dependencies_requirements_revno}) doesn't match project version (${latest_requirements_revno}). Exiting."
     exit 1
 fi
 
