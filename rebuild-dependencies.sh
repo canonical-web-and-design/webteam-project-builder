@@ -90,7 +90,7 @@ rm -r ${dependencies_dir}/*
 pip install --upgrade --exists-action=w --download ${dependencies_dir} -r ${code_dir}/requirements/standard.txt
 
 # Get latest revision number of the project, store it alongside dependencies
-echo ${latest_requirements_revno} > ${dependencies_dir}/requirements-revision.txt
+echo ${latest_requirements_revno} > ${dependencies_dir}/requirements-revno.txt
 
 # Commit and push all new files
 bzr add ${dependencies_dir}/.
