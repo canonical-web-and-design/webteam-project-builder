@@ -64,6 +64,7 @@ fi
 # Get revision ids
 dependencies_requirements_revno=$(cat ${project_name}/pip-cache/requirements-revno.txt)
 latest_requirements_revno=$(bzr-revno ${project_name}/requirements)
+latest_revision=$(bzr-revision-id ${project_name})
 
 # Make sure revision info matches
 if [ "${dependencies_requirements_revno}" != "${latest_requirements_revno}" ]; then
