@@ -67,7 +67,9 @@ latest_requirements_revno=$(bzr-revno ${project_name}/requirements)
 
 # Make sure revision info matches
 if [ "${dependencies_requirements_revno}" != "${latest_requirements_revno}" ]; then
-    echo "Depenencies version (${dependencies_requirements_revno}) doesn't match project version (${latest_requirements_revno}). Exiting."
+    echo "Depenencies version (${dependencies_requirements_revno}) doesn't match project version (${latest_requirements_revno})."
+    echo "Please run 'rebuild-dependencies' for ${project_name} (E.g., here: http://jenkins.ubuntu.qa/job/rebuild-dependencies)"
+    echo "Exiting."
     exit 1
 fi
 
