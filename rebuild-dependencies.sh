@@ -22,7 +22,7 @@ fi
 # ./rebuild-pip-cache.sh assets-mapper -r lp:assets-manager -c lp:~webteam-backend/assets-manager/pip-cache
 # ./rebuild-pip-cache.sh assets-manager --project-repo=lp:assets-manager --pip-cache-repo=lp:~webteam-backend/assets-manager/pip-cache
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o "r:,p:,:c" --long "project-repo:,pip-cache-repo:,create"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o "r:,p:,f:,:c" --long "project-repo:,pip-cache-repo:,requirements-file:,create"  -- "$@")
 eval set -- "$PARSED_OPTIONS"
 
 # extract options and their arguments into variables.
@@ -30,6 +30,7 @@ while true ; do
     case "$1" in
         -r|--project-repo)   project_repo=$2;   shift 2;;
         -p|--pip-cache-repo) pip_cache_repo=$2; shift 2;;
+        -f|--requirements-file) requirements_file=$2; shift 2;;
         -c|--create) create=true; shift;;
         --) shift; break;;
         *) echo "Error: Option parsing failure"; exit 1;;
@@ -39,6 +40,7 @@ done
 # Infer variables from project_name
 if [ -z "${project_repo}" ];   then project_repo=lp:${project_name}; fi
 if [ -z "${pip_cache_repo}" ]; then pip_cache_repo=lp:~webteam-backend/${project_name}/pip-cache; fi
+if [ -z "${requirements_file}" ]; then requirements_file='requirements/standard.txt'; fi
 
 cache_dir=working-cache
 project_cache_dir=working-cache/${project_name}
@@ -87,7 +89,7 @@ fi
 rm -r ${dependencies_dir}/*
 
 # Rebuild dependencies
-pip install --upgrade --exists-action=w --download ${dependencies_dir} -r ${code_dir}/requirements/standard.txt
+pip install --upgrade --exists-action=w --download ${dependencies_dir} -r ${code_dir}/${requirements_file}
 
 # Get latest revision number of the project, store it alongside dependencies
 echo ${latest_requirements_revno} > ${dependencies_dir}/requirements-revno.txt
