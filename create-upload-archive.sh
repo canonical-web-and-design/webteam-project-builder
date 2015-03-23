@@ -87,7 +87,7 @@ if [ -n "${make_targets}" ]; then
     # Setup virtual environment
     virtualenv ${project_name}-env
     source ${project_name}-env/bin/activate
-    pip install ${project_name}/${requirements_file}
+    pip install -r ${project_name}/${requirements_file}
     # Run any necessary make targets
     make -C ${project_name} ${make_targets} 
     # Leave virtual environment
