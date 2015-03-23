@@ -22,7 +22,7 @@ fi
 # ./create-archive-and-update-spec.sh assets-manager --make-targets sass  # Optionally run make target
 # ./create-archive-and-update-spec.sh assets-manager --project-repository lp:assets-manager --pip-cache-repository lp:~webteam-backend/assets-maanager/pip-cache --swift-container assets-manager --make-targets sass
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o "r:,p:,m:" --long "project-repository:,pip-cache-repository:,make-targets:"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o "r:,p:,f:,m:" --long "project-repository:,pip-cache-repository:,requirements-file:,make-targets:"  -- "$@")
 eval set -- "$PARSED_OPTIONS"
 
 # extract options and their arguments into variables.
@@ -30,6 +30,7 @@ while true ; do
     case "$1" in
         -r|--project-repository)   project_repository=$2;   shift 2;;
         -p|--pip-cache-repository) pip_cache_repository=$2; shift 2;;
+        -f|--requirements-file)    requirements_file=$2; shift 2;;
         -m|--make-targets)         make_targets=$2;         shift 2;;
         --) shift; break;;
         *) echo "Error: Option parsing failure" ; exit 1;;
@@ -39,6 +40,7 @@ done
 # Infer variables from project_name
 if [ -z "${project_repository}" ];    then project_repository=lp:${project_name}; fi
 if [ -z "${pip_cache_repository}" ];  then pip_cache_repository=lp:~webteam-backend/${project_name}/pip-cache; fi
+if [ -z "${requirements_file}" ];     then requirements_file=requirements/standard.txt; fi
 
 # Properties
 archive_filename=${project_name}.tar.gz
@@ -63,7 +65,13 @@ fi
 
 # Get revision ids
 dependencies_requirements_revno=$(cat ${project_name}/pip-cache/requirements-revno.txt)
-latest_requirements_revno=$(bzr-revno ${project_name}/requirements)
+
+requirements_context=${requirements_file}
+requirements_dir=$(dirname ${project_name}/${requirements_file})
+if [ "${requirements_dir}" != "${project_name}" ]; then
+    requirements_context=${requirements_dir}
+fi
+latest_requirements_revno=$(bzr-revno ${requirements_context})
 latest_revision=$(bzr-revision-id ${project_name})
 
 # Make sure revision info matches
