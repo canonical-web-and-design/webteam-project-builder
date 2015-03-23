@@ -66,8 +66,8 @@ fi
 # Get revision ids
 dependencies_requirements_revno=$(cat ${project_name}/pip-cache/requirements-revno.txt)
 
-requirements_context=${requirements_file}
-requirements_dir=$(dirname ${project_name}/${requirements_file})
+requirements_context=${project_name}/${requirements_file}
+requirements_dir=$(dirname ${requirements_context})
 if [ "${requirements_dir}" != "${project_name}" ]; then
     requirements_context=${requirements_dir}
 fi
