@@ -87,7 +87,7 @@ if [ -n "${make_targets}" ]; then
     # Setup virtual environment
     virtualenv ${project_name}-env
     source ${project_name}-env/bin/activate
-    pip install -r ${project_name}/${requirements_file} --no-index --find-links="file:///`pwd`/${project_name}/pip-cache/"
+    pip install -r ${project_name}/${requirements_file} --no-index --find-links="${project_name}/pip-cache/"
     # Run any necessary make targets
     make -C ${project_name} ${make_targets} 
     # Leave virtual environment
