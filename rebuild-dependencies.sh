@@ -89,7 +89,7 @@ if [ -e "${dependencies_dir}/requirements-revno.txt" ]; then
 fi
 
 # Clear out existing dependencies, to create from scratch again
-rm -r ${dependencies_dir}/*
+rm -rf ${dependencies_dir}/*
 
 # Rebuild dependencies
 pip install --upgrade --exists-action=w --download ${dependencies_dir} -r ${code_dir}/${requirements_file}
