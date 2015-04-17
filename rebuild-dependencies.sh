@@ -76,13 +76,16 @@ else
     bzr branch ${project_repo} ${code_dir}
 fi
 
-existing_requirements_revno=$(cat ${dependencies_dir}/requirements-revno.txt)
 latest_requirements_revno=$(bzr-revno ${code_dir}/requirements)
 
-# Make sure this is a new revision
-if [[ "${existing_requirements_revno}" == "${latest_requirements_revno}" ]]; then
-    echo "New version (${latest_requirements_revno}) is the same as the existing version (${existing_requirements_revno}). Aborting."
-    exit 1
+if [ -e "${dependencies_dir}/requirements-revno.txt" ]; then
+    existing_requirements_revno=$(cat ${dependencies_dir}/requirements-revno.txt)
+
+    # Make sure this is a new revision
+    if [[ "${existing_requirements_revno}" == "${latest_requirements_revno}" ]]; then
+        echo "New version (${latest_requirements_revno}) is the same as the existing version (${existing_requirements_revno}). Aborting."
+        exit 1
+    fi
 fi
 
 # Clear out existing dependencies, to create from scratch again
