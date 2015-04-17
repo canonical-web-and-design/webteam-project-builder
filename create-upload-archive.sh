@@ -87,6 +87,10 @@ if [ -n "${make_targets}" ]; then
     # Setup virtual environment
     virtualenv ${project_name}-env
     source ${project_name}-env/bin/activate
+    # Download a good version of pip
+    bzr cat lp:~webteam-backend/webteam-project-builder/shared-dependencies/pip-6.1.1.tar.gz > pip.tgz
+    # Upgrade pip
+    pip install --upgrade pip.tgz
     pip install --upgrade -r ${project_name}/${requirements_file} --no-index --find-links=${project_name}/pip-cache
     # Run any necessary make targets
     make -C ${project_name} ${make_targets} 
