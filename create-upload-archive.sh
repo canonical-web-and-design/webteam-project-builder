@@ -22,7 +22,7 @@ fi
 # ./create-archive-and-update-spec.sh assets-manager --make-targets sass  # Optionally run make target
 # ./create-archive-and-update-spec.sh assets-manager --project-repository lp:assets-manager --pip-cache-repository lp:~webteam-backend/assets-maanager/pip-cache --swift-container assets-manager --make-targets sass
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o "r:,p:,f:,m:" --long "project-repository:,pip-cache-repository:,requirements-file:,make-targets:"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o "r:,p:,f:,c:" --long "project-repository:,pip-cache-repository:,requirements-file:,extra-command:"  -- "$@")
 eval set -- "$PARSED_OPTIONS"
 
 # extract options and their arguments into variables.
@@ -30,8 +30,8 @@ while true ; do
     case "$1" in
         -r|--project-repository)   project_repository=$2;   shift 2;;
         -p|--pip-cache-repository) pip_cache_repository=$2; shift 2;;
-        -f|--requirements-file)    requirements_file=$2; shift 2;;
-        -m|--make-targets)         make_targets=$2;         shift 2;;
+        -f|--requirements-file)    requirements_file=$2;    shift 2;;
+        -c|--extra-command)       extra_command=$2;       shift 2;;
         --) shift; break;;
         *) echo "Error: Option parsing failure" ; exit 1;;
     esac
@@ -83,25 +83,15 @@ if [ "${dependencies_requirements_revno}" != "${latest_requirements_revno}" ]; t
 fi
 
 # Run make targets
-if [ -n "${make_targets}" ]; then
-    # Setup virtual environment
-    virtualenv ${project_name}-env
-    source ${project_name}-env/bin/activate
-    # Download a good version of pip
-    bzr cat lp:~webteam-backend/webteam-project-builder/shared-dependencies/pip-6.1.1.tar.gz > pip.tgz
-    # Upgrade pip
-    pip install --upgrade pip.tgz
-    pip install --upgrade -r ${project_name}/${requirements_file} --no-index --find-links=${project_name}/pip-cache
-    # Run any necessary make targets
-    make -C ${project_name} ${make_targets} 
-    # Leave virtual environment
-    deactivate
+if [ -n "${extra_command}" ]; then
+    cd ${project_name}
+    ${extra_command}
+    cd -
 fi
 
 # Create archive
 rm -f ${archive_filename}
 tar -C ${project_name} --exclude-vcs -czf ${archive_filename} .
-
 
 # Upload to swift container
 swift upload ${project_name} ${archive_filename} --object-name=${latest_revision}/${archive_filename}
