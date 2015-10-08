@@ -18,7 +18,8 @@ tag_name=${project_name}-${project_version}
 update-from-remote ${tag_name} git.launchpad.net:webteam-dependencies ${project_name}/pip-cache || true
 
 if [[ ! -d ${project_name}/pip-cache ]]; then
-    echo -e "\n= Missing correct version of pip-cache. Please create it first. =\n"
+    echo -e "\n= Missing correct version of pip-cache. Please create it first. ="
+    echo -e "= Update pip-cache here: http://jenkins.demo.haus/job/update-pip-cache/parambuild/?project_name=${project_name} =\n"
     exit 1
 fi
 
