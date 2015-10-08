@@ -21,7 +21,7 @@ function update-from-remote {
 function create-pip-cache {
     project_dir=$1
 
-    pip install ${PIP_PROXY:+"--proxy "${PIP_PROXY}} \
+    pip install ${PIP_PROXY:+--proxy ${PIP_PROXY}} \
         --exists-action=w \
         --download ${project_dir}/pip-cache \
         --requirement ${project_dir}/requirements/standard.txt
