@@ -6,7 +6,9 @@ set -e
 project_name=${1}
 project_repository=${2:-"git.launchpad.net:"${project_name}}
 
+echo -e "\n= Importing bash functions and nova credentials =\n"
 source ./lib.sh
+source $HOME/.nova-credentials/stg-${project_name}
 
 echo -e "\n= Get ${project_name} code from ${project_repository} =\n"
 update-from-remote master ${project_repository} ${project_name}
@@ -26,8 +28,6 @@ mkdir -p ${project_version}
 tar --exclude-vcs -czf ${archive_filepath} -C ${project_name} .
 
 echo -e "\n= Upload ${project_version}/${project_name}.tar.gz to swift container ${project_name} =\n"
-source $HOME/.nova-credentials/stg-${project_name}
-
 swift upload ${project_name} ${archive_filepath}
 
 echo -e "\n= Set build-label-for-staging in ${project_name} to ${project_version} =\n"
