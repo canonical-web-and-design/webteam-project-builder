@@ -17,3 +17,12 @@ function update-from-remote {
         git -C ${dir_path} reset --hard FETCH_HEAD
     )
 }
+
+function create-pip-cache {
+    project_dir=$1
+
+    pip install ${PIP_PROXY:+"--proxy "${PIP_PROXY}} \
+        --exists-action=w \
+        --download ${project_dir}/pip-cache \
+        --requirement ${project_dir}/requirements/standard.txt
+}
