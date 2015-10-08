@@ -21,7 +21,7 @@ if swift list ${project_name} | grep -q ${archive_filepath}; then
 fi
 
 echo -e "\n= Build CSS files from SCSS =\n"
-sass --force --default-encoding "UTF-8" --update ${project_name}/static/css --style compressed
+sass --force --update ${project_name}/static/css --style compressed
 
 echo -e "\n= Get pip-cache dependencies for ${project_name} =\n"
 create-pip-cache ${project_name}
