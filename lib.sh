@@ -10,16 +10,18 @@ function update-from-remote {
     dir_path=$3
 
     git clone --depth 1 -b ${branch} ${git_url} ${dir_path} || (
-        git -C ${dir_path} clean -fd
-        git -C ${dir_path} remote remove origin || true
-        git -C ${dir_path} remote add origin ${git_url}
-        git -C ${dir_path} fetch origin ${branch}
-        git -C ${dir_path} reset --hard FETCH_HEAD
+        git --git-dir ${dir_path}/.git --work-tree ${dir_path} clean -fd
+        git --git-dir ${dir_path}/.git remote remove origin || true
+        git --git-dir ${dir_path}/.git remote add origin ${git_url}
+        git --git-dir ${dir_path}/.git fetch origin ${branch}
+        git --git-dir ${dir_path}/.git --work-tree ${dir_path} reset --hard FETCH_HEAD
     )
 }
 
 function create-pip-cache {
     project_dir=$1
+
+    mkdir -p ${project_dir}/pip-cache
 
     pip install ${PIP_PROXY:+--proxy ${PIP_PROXY}} \
         --exists-action=w \
