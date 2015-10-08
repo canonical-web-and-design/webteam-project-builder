@@ -30,6 +30,6 @@ source $HOME/.nova-credentials/stg-${project_name}
 
 swift upload ${project_name} ${archive_filepath}
 
-echo -e "\n= Set latest-build-label in ${project_name} to ${project_version} =\n"
-echo -e ${project_version} > latest-build-label
-swift upload ${project_name} latest-build-label
+echo -e "\n= Set build-label-for-staging in ${project_name} to ${project_version} =\n"
+echo -e ${project_version} > build-label-for-staging
+swift upload ${project_name} build-label-for-staging
