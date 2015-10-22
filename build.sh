@@ -17,7 +17,7 @@ archive_filepath=${project_version}/${project_name}.tar.gz
 
 if swift list ${project_name} | grep -q ${archive_filepath}; then
   echo -e "\n= Archive already exists: ${archive_filepath}. Exiting."
-  exit 1
+  exit 99
 fi
 
 echo -e "\n= Build CSS files from SCSS =\n"
