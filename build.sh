@@ -20,6 +20,15 @@ if swift list ${project_name} | grep -q ${archive_filepath}; then
   exit 99
 fi
 
+if [[ -e ${project_name}/package.json ]]; then
+    echo -e "\n= NPM install =\n"
+
+    (
+      cd ${project_name}
+      npm install
+    )
+fi
+
 echo -e "\n= Build CSS files from SCSS =\n"
 sass --force --update ${project_name}/static/css --style compressed
 
